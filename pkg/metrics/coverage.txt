@@ -1,9 +1,0 @@
-mode: atomic
-github.com/atssteve/perf_collector/pkg/metrics/meminfo-linux.go:15.39,17.16 2 0
-github.com/atssteve/perf_collector/pkg/metrics/meminfo-linux.go:22.2,24.27 2 0
-github.com/atssteve/perf_collector/pkg/metrics/meminfo-linux.go:17.16,21.3 1 0
-github.com/atssteve/perf_collector/pkg/metrics/meminfo-linux.go:29.52,34.25 4 1
-github.com/atssteve/perf_collector/pkg/metrics/meminfo-linux.go:44.2,44.30 1 1
-github.com/atssteve/perf_collector/pkg/metrics/meminfo-linux.go:52.2,52.13 1 1
-github.com/atssteve/perf_collector/pkg/metrics/meminfo-linux.go:34.25,42.3 7 3
-github.com/atssteve/perf_collector/pkg/metrics/meminfo-linux.go:44.30,50.3 1 0
