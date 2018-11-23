@@ -2,6 +2,7 @@ package metrics
 
 import (
 	"bufio"
+	"io"
 	"os"
 	"regexp"
 	"strconv"
@@ -10,8 +11,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// GetMemInfo parses proc and returns a slice of maps containing all of the metrics keys and values.
-func GetMemInfo() []map[string]int64 {
+//
+func GetMemInfo() *[]map[string]int64 {
 	file, err := os.Open("/proc/meminfo")
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -20,10 +21,16 @@ func GetMemInfo() []map[string]int64 {
 	}
 	defer file.Close()
 
+	return parseMemInfo(file)
+
+}
+
+// ParseMemInfo parses proc and returns a slice of maps containing all of the metrics keys and values.
+func parseMemInfo(r io.Reader) *[]map[string]int64 {
 	var memory []map[string]int64           // Create an empty slice to hold the metrics.
 	var re = regexp.MustCompile(`\((.*)\)`) // Regex to replace any metrics wrapped in () ro be prefixed with _.
 
-	fileScanner := bufio.NewScanner(file)
+	fileScanner := bufio.NewScanner(r)
 	for fileScanner.Scan() {
 		m := make(map[string]int64)                   // Create a new map to hold the Metrics info.
 		line := strings.Fields(fileScanner.Text())    // Split the line up, this will also remove the kB for us.
@@ -42,5 +49,5 @@ func GetMemInfo() []map[string]int64 {
 		}).Warn("Unable read /proc/meminfo")
 	}
 
-	return memory
+	return &memory
 }
