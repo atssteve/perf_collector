@@ -1,10 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"runtime"
 
-	"github.com/atssteve/perf_collector/pkg/metrics"
+	"github.com/atssteve/perf_collector/pkg/collectors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -19,9 +18,16 @@ func main() {
 		"HeapSys":    mem.HeapSys,
 	}).Info("Starting Memory Statistics")
 
-	fmt.Println(metrics.GetMemInfo())
+	lcc := &collectors.LinuxCollectorConfig{
+		Intervals: 5,
+	}
 
-	runtime.ReadMemStats(&mem)
+	lcm := &collectors.LinuxCollectorMetrics{
+		MemInfo: true,
+	}
+
+	collectors.StartCollection(*lcc, *lcm)
+
 	log.WithFields(log.Fields{
 		"Alloc":      mem.Alloc,
 		"TotalAlloc": mem.TotalAlloc,

@@ -12,7 +12,7 @@ import (
 )
 
 // GetMemInfo will return a map containing the data parsed from /proc/meminfo
-func GetMemInfo() *[]map[string]int64 {
+func GetMemInfo(done chan bool) {
 	file, err := os.Open("/proc/meminfo")
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -21,8 +21,11 @@ func GetMemInfo() *[]map[string]int64 {
 	}
 	defer file.Close()
 
-	return parseMemInfo(file)
-
+	log.WithFields(log.Fields{
+		"collector": "meminfo",
+		"results":   "true",
+	}).Info(parseMemInfo(file))
+	done <- true
 }
 
 // ParseMemInfo parses proc and returns a slice of maps containing all of the metrics keys and values.
