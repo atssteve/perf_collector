@@ -35,10 +35,10 @@ func StartCollection(c LinuxCollectorConfig, m LinuxCollectorMetrics) {
 // getMetric will evalute the metric name passed and create a go routine and a buffered channel of bools
 // which will wait for the go routine to complete its work.
 func getMetric(m string) {
+	done := make(chan bool, 1)
 	switch m {
 	case "meminfo":
-		done := make(chan bool, 1)
 		go metrics.GetMemInfo(done)
-		<-done
 	}
+	<-done
 }
