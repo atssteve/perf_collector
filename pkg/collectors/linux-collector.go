@@ -1,6 +1,7 @@
 package collectors
 
 import (
+	"sync"
 	"time"
 
 	"github.com/atssteve/perf_collector/pkg/metrics"
@@ -24,12 +25,19 @@ type LinuxCollectorMetrics struct {
 
 // StartCollection starts up collection based on the details provided.
 func StartCollection(c LinuxCollectorConfig, m LinuxCollectorMetrics) {
+	var wg sync.WaitGroup
 	time.Sleep(c.Intervals * time.Second)
 	switch {
 	case m.MemInfo:
-		go getMetric("meminfo")
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			getMetric("meminfo")
+
+		}()
 	}
-	time.Sleep(2 * time.Second)
+
+	wg.Wait()
 }
 
 // getMetric will evalute the metric name passed and create a go routine and a buffered channel of bools
