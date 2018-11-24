@@ -24,9 +24,9 @@ type LinuxCollectorMetrics struct {
 }
 
 // StartCollection starts up collection based on the details provided.
-func StartCollection(c LinuxCollectorConfig, m LinuxCollectorMetrics) {
+func StartCollection(c *LinuxCollectorConfig, m *LinuxCollectorMetrics) {
 	var wg sync.WaitGroup
-	time.Sleep(c.Intervals * time.Second)
+	time.Sleep(c.Intervals)
 	switch {
 	case m.MemInfo:
 		wg.Add(1)
