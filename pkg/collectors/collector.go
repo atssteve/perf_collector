@@ -26,7 +26,7 @@ type CollectorMetrics struct {
 
 // StartCollection starts up collection based on the details provided.
 func StartCollection(c *CollectorConfig, m *CollectorMetrics) {
-	fmt.Println("Starting collection on any node")
+	fmt.Println("Im the start of the common files")
 	var wg sync.WaitGroup
 	time.Sleep(c.Intervals)
 	switch {

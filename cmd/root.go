@@ -32,7 +32,6 @@ var lcm = collectors.CollectorMetrics{
 func Execute() {
 	lcc.Intervals = time.Duration(5) * time.Second
 	lcm.MemInfo = true
-	fmt.Println("Hey Im a common file")
 	rootCmd.Flags().DurationVarP(&lcc.Intervals, "intervals", "i", time.Duration(5)*time.Second, "The number of seconds to wait before collecting metrics.")
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
