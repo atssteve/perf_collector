@@ -2,6 +2,7 @@ package metrics
 
 import (
 	"bufio"
+	"fmt"
 	"io"
 	"os"
 	"regexp"
@@ -13,6 +14,7 @@ import (
 
 // GetMemInfo will return a map containing the data parsed from /proc/meminfo
 func GetMemInfo(done chan bool) {
+	fmt.Println("Grabbing Mem stats for Linux based on file name")
 	file, err := os.Open("/proc/meminfo")
 	if err != nil {
 		log.WithFields(log.Fields{

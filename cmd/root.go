@@ -20,18 +20,20 @@ var rootCmd = &cobra.Command{
 
 var interval int64
 
-var lcc = collectors.LinuxCollectorConfig{
+var lcc = collectors.CollectorConfig{
 	Intervals: time.Duration(interval),
 }
 
-var lcm = collectors.LinuxCollectorMetrics{
+var lcm = collectors.CollectorMetrics{
 	MemInfo: true,
 }
 
 //Execute runs at the time the commandline tool is called.
 func Execute() {
+	lcc.Intervals = time.Duration(5) * time.Second
+	lcm.MemInfo = true
+	fmt.Println("Hey Im a common file")
 	rootCmd.Flags().DurationVarP(&lcc.Intervals, "intervals", "i", time.Duration(5)*time.Second, "The number of seconds to wait before collecting metrics.")
-
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)

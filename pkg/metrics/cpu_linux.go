@@ -7,14 +7,15 @@ import (
 	"github.com/shirou/gopsutil/cpu"
 )
 
-// CPUTesting is for testing this cpu stuff
-func CPUTesting() {
+// CPUInfo is for testing this cpu stuff
+func CPUInfo(done chan bool) {
 	t := time.Now()
-	fmt.Println("This is a linux build")
+	fmt.Println("Grabbing cpu stats for linux based on file name")
 	ctimes, _ := cpu.Times(false)
 	mycpu, _ := cpu.Info()
-	fmt.Println(mycpu)
-	fmt.Println(ctimes)
+	fmt.Println(mycpu[0])
+	fmt.Println(ctimes[0])
 	fmt.Println(time.Since(t))
+	done <- true
 
 }

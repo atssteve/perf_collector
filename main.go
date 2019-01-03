@@ -1,10 +1,9 @@
 package main
 
 import (
-	"github.com/atssteve/perf_collector/pkg/metrics"
+	"github.com/atssteve/perf_collector/cmd"
 )
 
 func main() {
-	metrics.CPUTesting()
-	metrics.GetMemInfo()
+	cmd.Execute()
 }
