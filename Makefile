@@ -1,5 +1,10 @@
+GOCMD=go
+GOBUILD=$(GOCMD) build
+BINARY_NAME=perf_collector
+
 build:
-	go build -o perf_collector main.go 
+	GOOS=linux  GOARCH=amd64 $(GOBUILD) -o $(BINARY_NAME)_linux -v
+	GOOS=darwin GOARCH=amd64 $(GOBUILD) -o $(BINARY_NAME)_macos -v
 
 test-deps:
 	go get -v -t -d ./...

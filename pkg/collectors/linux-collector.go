@@ -1,10 +1,9 @@
 package collectors
 
 import (
+	"perf_collector/pkg/metrics"
 	"sync"
 	"time"
-
-	"github.com/atssteve/perf_collector/pkg/metrics"
 )
 
 // Currently this is a work in progress. Here we want to manage the intervals at which we collect metrics
