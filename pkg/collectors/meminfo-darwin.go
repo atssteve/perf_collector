@@ -1,4 +1,4 @@
-// +build linux
+// +build darwin
 
 package collectors
 
@@ -7,10 +7,11 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// GetMemInfo collects all of the virtual memory information for the requested OS.
 func GetMemInfo() {
 	v, _ := mem.VirtualMemory()
 	log.WithFields(log.Fields{
 		"collector": "meminfo",
-		"os":        "linux",
+		"os":        "darwin",
 	}).Info(v)
 }

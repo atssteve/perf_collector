@@ -3,8 +3,9 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"time"
 
-	"github.com/atssteve/perf_collector/pkg/collectors"
+	"github.com/atssteve/perf_collector/pkg/agent"
 	"github.com/spf13/cobra"
 )
 
@@ -13,13 +14,15 @@ var rootCmd = &cobra.Command{
 	Short: "Perf Collector is a plugable, portable metrics collector.",
 	Long:  `A Plugable and Portable metrics collector.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		collectors.StartCollection()
+		newagent.Start()
 	},
 }
 
+var newagent agent.Agent
+
 //Execute runs at the time the commandline tool is called.
 func Execute() {
-	//rootCmd.Flags().DurationVarP(&lcc.Intervals, "intervals", "i", time.Duration(5)*time.Second, "The number of seconds to wait before collecting metrics.")
+	rootCmd.Flags().DurationVarP(&newagent.Intervals, "intervals", "i", time.Duration(2)*time.Second, "The number of seconds to wait before collecting metrics.")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

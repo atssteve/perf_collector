@@ -6,7 +6,6 @@ func init() {
 
 type memInfoCollector struct {
 	Collector string
-	Metrics   struct{}
 }
 
 func NewMemInfoCollector() Collector {
