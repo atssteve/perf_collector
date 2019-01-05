@@ -4,9 +4,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var registeredCollectors = make(map[string]func())
+var registeredCollectors = make(map[string]func() Collector)
 
-func registerCollector(collectorName string, collectorInit func()) {
+// Collector interface allows registeration of any collector simply by containing the Update receiver.
+type Collector interface {
+	Update()
+}
+
+func registerCollector(collectorName string, collectorInit func() Collector) {
 	registeredCollectors[collectorName] = collectorInit
 }
 
@@ -16,12 +21,16 @@ func StartCollection() {
 		activeCollectors = append(activeCollectors, k)
 	}
 	log.Infof("Registered Collectors: %s", activeCollectors)
+	UpdateCollection()
+}
 
+func UpdateCollection() {
 	for k, v := range registeredCollectors {
 		log.WithFields(log.Fields{
 			"collector": "meminfo",
 			"action":    "Starting collection",
 		}).Info(k)
-		v()
+		collector := v()
+		collector.Update()
 	}
 }
