@@ -1,9 +1,11 @@
 package agent
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/atssteve/perf_collector/pkg/collectors"
+	"github.com/atssteve/perf_collector/pkg/metrics"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -17,10 +19,13 @@ type Agent struct {
 
 // Start is a prototype/placeholder right now.
 func (a *Agent) Start() {
+	metricsChannel := make(chan metrics.Metric, 1)
 	log.WithFields(log.Fields{
 		"pooling_intervals": a.Intervals,
 	}).Info("Starting new agent")
 	collectors.StartCollection()
 	time.Sleep(a.Intervals)
-	collectors.UpdateCollection()
+	collectors.UpdateCollection(metricsChannel)
+	fmt.Println(<-metricsChannel)
+
 }

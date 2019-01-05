@@ -1,5 +1,9 @@
 package collectors
 
+import (
+	"github.com/atssteve/perf_collector/pkg/metrics"
+)
+
 func init() {
 	registerCollector("meminfo", NewMemInfoCollector)
 }
@@ -15,6 +19,6 @@ func NewMemInfoCollector() Collector {
 	}
 }
 
-func (m *memInfoCollector) Update() {
-	GetMemInfo()
+func (m *memInfoCollector) Update(ch chan metrics.Metric) {
+	ch <- GetMemInfo()
 }
