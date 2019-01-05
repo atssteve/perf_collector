@@ -15,6 +15,7 @@ func registerCollector(collectorName string, collectorInit func() Collector) {
 	registeredCollectors[collectorName] = collectorInit
 }
 
+// StartCollection logs a list of registered collectors before kicking off the collection.
 func StartCollection() {
 	activeCollectors := []string{}
 	for k := range registeredCollectors {
@@ -24,6 +25,7 @@ func StartCollection() {
 	UpdateCollection()
 }
 
+// UpdateCollection requests all of the collectors to update their metrics.
 func UpdateCollection() {
 	for k, v := range registeredCollectors {
 		log.WithFields(log.Fields{
