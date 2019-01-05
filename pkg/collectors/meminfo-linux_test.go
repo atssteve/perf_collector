@@ -1,7 +1,7 @@
-package metrics
+package collectors
 
 import (
-	"reflect"
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -12,17 +12,5 @@ import (
 // be tested here.
 func Test_parseMemInfo(t *testing.T) {
 	mockMemInfo := strings.NewReader("MemFree:\t1000 kB\nMem_Test:\t2000 kB\nActive(file):\t 3000 kB") // Example file testing key name parsing.
-	memOut := parseMemInfo(mockMemInfo)
-	for _, i := range *memOut {
-		if len(i) < 1 {
-			t.Error("Map has to many values. This shouldn't be possible.")
-		}
-		key := reflect.ValueOf(i).MapKeys()
-		if strings.Contains(key[0].Interface().(string), "(") == true {
-			t.Error("Found (, this should have been replaced via regex.")
-		}
-		if strings.Contains(key[0].Interface().(string), ")") == true {
-			t.Error("Found ), this should have been replaced via regex.")
-		}
-	}
+	fmt.Println(mockMemInfo)
 }
