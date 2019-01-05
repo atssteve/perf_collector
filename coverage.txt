@@ -1,0 +1,18 @@
+mode: atomic
+github.com/atssteve/perf_collector/pkg/collectors/collector.go:18.78,20.2 1 2
+github.com/atssteve/perf_collector/pkg/collectors/collector.go:23.24,25.38 2 0
+github.com/atssteve/perf_collector/pkg/collectors/collector.go:28.2,28.58 1 0
+github.com/atssteve/perf_collector/pkg/collectors/collector.go:25.38,27.3 1 0
+github.com/atssteve/perf_collector/pkg/collectors/collector.go:32.47,33.41 1 0
+github.com/atssteve/perf_collector/pkg/collectors/collector.go:45.2,45.11 1 0
+github.com/atssteve/perf_collector/pkg/collectors/collector.go:33.41,40.13 4 0
+github.com/atssteve/perf_collector/pkg/collectors/collector.go:40.13,43.4 2 0
+github.com/atssteve/perf_collector/pkg/collectors/cpu-common.go:7.13,9.2 1 1
+github.com/atssteve/perf_collector/pkg/collectors/cpu-common.go:16.34,20.2 1 1
+github.com/atssteve/perf_collector/pkg/collectors/cpu-common.go:22.55,24.2 1 1
+github.com/atssteve/perf_collector/pkg/collectors/cpu-darwin.go:12.41,19.27 3 1
+github.com/atssteve/perf_collector/pkg/collectors/cpu-darwin.go:19.27,21.3 1 8
+github.com/atssteve/perf_collector/pkg/collectors/meminfo-common.go:7.13,9.2 1 1
+github.com/atssteve/perf_collector/pkg/collectors/meminfo-common.go:16.38,20.2 1 1
+github.com/atssteve/perf_collector/pkg/collectors/meminfo-common.go:22.59,24.2 1 1
+github.com/atssteve/perf_collector/pkg/collectors/meminfo-darwin.go:12.41,20.2 3 1
