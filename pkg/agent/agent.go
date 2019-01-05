@@ -19,13 +19,14 @@ type Agent struct {
 
 // Start is a prototype/placeholder right now.
 func (a *Agent) Start() {
-	metricsChannel := make(chan metrics.Metric, 1)
+	metricsChannel := make(chan metrics.Metric, 1000)
 	log.WithFields(log.Fields{
 		"pooling_intervals": a.Intervals,
 	}).Info("Starting new agent")
 	collectors.StartCollection()
-	time.Sleep(a.Intervals)
 	collectors.UpdateCollection(metricsChannel)
-	fmt.Println(<-metricsChannel)
-
+	fmt.Println("=========Draining Channel==========")
+	for len(metricsChannel) != 0 {
+		fmt.Println(<-metricsChannel)
+	}
 }

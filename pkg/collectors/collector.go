@@ -1,10 +1,13 @@
 package collectors
 
 import (
+	"sync"
+
 	"github.com/atssteve/perf_collector/pkg/metrics"
 	log "github.com/sirupsen/logrus"
 )
 
+var wg sync.WaitGroup
 var registeredCollectors = make(map[string]func() Collector)
 
 // Collector interface allows registeration of any collector simply by containing the Update receiver.
@@ -28,11 +31,16 @@ func StartCollection() {
 // UpdateCollection requests all of the collectors to update their metrics.
 func UpdateCollection(ch chan metrics.Metric) {
 	for k, v := range registeredCollectors {
+		wg.Add(1)
 		log.WithFields(log.Fields{
-			"collector": "meminfo",
+			"collector": k,
 			"action":    "Starting collection",
 		}).Info(k)
 		collector := v()
-		collector.Update(ch)
+		go func() {
+			collector.Update(ch)
+			wg.Done()
+		}()
 	}
+	wg.Wait()
 }
