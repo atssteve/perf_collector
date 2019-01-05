@@ -1,5 +1,7 @@
 # Perf Collector
 
+[![CircleCI](https://circleci.com/gh/atssteve/perf_collector.svg?style=svg)](https://circleci.com/gh/atssteve/perf_collector)
+
 Perf Collector is a cross platform performance metric collection tool.
 
 ## Hacking
