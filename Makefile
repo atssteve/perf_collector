@@ -3,7 +3,7 @@ build:
 	go build -o perf_collector main.go 
 
 test-deps:
-	get get -v
+	go get -v
 
 test-circleci: test-deps
 	go test -race -covermode=atomic -coverprofile=coverage.txt ./...
