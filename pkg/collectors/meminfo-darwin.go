@@ -9,12 +9,12 @@ import (
 )
 
 // GetMemInfo collects all of the virtual memory information for the requested OS.
-func GetMemInfo() metrics.Metric {
+func GetMemInfo(ch chan metrics.Metric) {
 	v, _ := mem.VirtualMemory()
 	log.WithFields(log.Fields{
 		"collector": "meminfo",
 		"os":        "darwin",
 	}).Info(v)
 
-	return v
+	ch <- v
 }

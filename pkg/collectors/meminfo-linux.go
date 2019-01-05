@@ -8,12 +8,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func GetMemInfo() metrics.Metric {
+func GetMemInfo(ch chan metrics.Metric) {
 	v, _ := mem.VirtualMemory()
 	log.WithFields(log.Fields{
 		"collector": "meminfo",
 		"os":        "linux",
 	}).Info(v)
 
-	return v
+	ch <- v
 }

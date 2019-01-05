@@ -20,5 +20,5 @@ func NewMemInfoCollector() Collector {
 }
 
 func (m *memInfoCollector) Update(ch chan metrics.Metric) {
-	ch <- GetMemInfo()
+	GetMemInfo(ch)
 }
