@@ -10,7 +10,8 @@ import (
 
 // GetDiskInfo collects all of the available stats for disk
 func GetDiskInfo(ch chan metrics.Metric) {
-	filesystems, _ := disk.Partitions(true)
+	filesystems, _ := disk.Partitions(false)
+
 	for _, fsStats := range filesystems {
 		v, _ := disk.Usage(fsStats.Mountpoint)
 		log.WithFields(log.Fields{
