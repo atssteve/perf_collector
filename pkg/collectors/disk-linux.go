@@ -1,4 +1,4 @@
-// +build darwin
+// +build linux
 
 package collectors
 
@@ -30,8 +30,6 @@ func alreadyInList(check string, devs []string) bool {
 	}
 	return false
 }
-
-// GetDiskInfo collects all of the available stats for disk
 func GetDiskInfo(ch chan metrics.Metric) {
 	filesystems, _ := disk.Partitions(true)
 	devList := []string{}
@@ -56,20 +54,28 @@ func GetDiskInfo(ch chan metrics.Metric) {
 		}
 		devList = append(devList, fsStats.Device)
 
-		// 	diskData := LoadDiskData{}
-		// 	diskData.DeviceName = fsStats.Device
-		// 	us, _ := disk.Usage(fsStats.Mountpoint)
-		// 	ios, _ := disk.IOCounters(fsStats.Device)
-
-		// 	diskData.FSInfo = us
-		// 	for _, diskDevData := range ios {
-		// 		diskData.DevInfo = append(diskData.DevInfo, diskDevData)
-		// 	}
-		// 	log.WithFields(log.Fields{
-		// 		"collector": "disk",
-		// 		"os":        "darwin",
-		// 	}).Info(diskData)
-
-		// 	ch <- diskData
 	}
 }
+
+// GetDiskInfo collects all of the available stats for disk
+// func GetDiskInfo(ch chan metrics.Metric) {
+// 	filesystems, _ := disk.Partitions(false)
+// 	for _, fsStats := range filesystems {
+// 		diskData := LoadDiskData{}
+// 		diskData.DeviceName = fsStats.Device
+// 		us, _ := disk.Usage(fsStats.Mountpoint)
+// 		ios, _ := disk.IOCounters(fsStats.Device)
+
+// 		diskData.FSInfo = us
+// 		for _, diskDevData := range ios {
+// 			diskData.DevInfo = append(diskData.DevInfo, diskDevData)
+// 		}
+
+// 		log.WithFields(log.Fields{
+// 			"collector": "disk",
+// 			"os":        "linux",
+// 		}).Info(diskData)
+
+// 		ch <- diskData
+// 	}
+// }
