@@ -14,7 +14,7 @@ func GetDiskInfo(ch chan metrics.Metric) {
 	log.WithFields(log.Fields{
 		"collector": "disk",
 		"os":        "darwin",
-	}).Info(diskStats)
+	}).Debug(diskStats)
 	for _, v := range diskStats {
 		ch <- v
 	}

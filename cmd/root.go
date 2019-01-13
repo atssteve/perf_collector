@@ -25,6 +25,7 @@ func Execute() {
 	rootCmd.Flags().DurationVarP(&newagent.Intervals, "intervals", "i", time.Duration(2)*time.Second, "The number of seconds to wait before collecting metrics.")
 	rootCmd.Flags().BoolVar(&newagent.Output.Local.Enabled, "local", false, "Output files to a local filesystems")
 	rootCmd.Flags().StringVar(&newagent.Output.Local.Path, "path", "/tmp", "Path in which to write files to.")
+	rootCmd.Flags().DurationVar(&newagent.Output.Local.RotationTime, "rotation-time", time.Duration(15)*time.Minute, "Duration in which to rotation file. Decreasing this entry will increase the rate which data is uploaded to S3")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)

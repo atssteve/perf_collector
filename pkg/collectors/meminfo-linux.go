@@ -13,7 +13,7 @@ func GetMemInfo(ch chan metrics.Metric) {
 	log.WithFields(log.Fields{
 		"collector": "meminfo",
 		"os":        "linux",
-	}).Info(v)
+	}).Debug(v)
 
 	ch <- v
 }
