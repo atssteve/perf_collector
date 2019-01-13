@@ -21,20 +21,21 @@ type Agent struct {
 // Start is a prototype/placeholder right now.
 func (a *Agent) Start() {
 	// Making channels here for metrics and outputters
-
 	localChan := make(chan metrics.Metric)
+
 	log.WithFields(log.Fields{
 		"pooling_intervals": a.Intervals,
 		"output":            a.Output,
 	}).Info("Starting new agent")
 	collectors.StartCollection()
+
 	// Start up any enabled outputters
 	if a.Output.Local.Enabled {
 		go a.Output.Local.Write(localChan)
 	}
 
 	// Start collections
-	for {
+	for x := 0; x < 3; x++ {
 		metricsChannel := make(chan metrics.Metric, 1000)
 		collectors.UpdateCollection(metricsChannel)
 
