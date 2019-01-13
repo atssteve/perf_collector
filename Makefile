@@ -8,6 +8,9 @@ run: build
 test-deps:
 	go get -v
 
+clean:
+	rm /tmp/perf-collector*
+
 test-circleci: test-deps
 	go test -race -covermode=atomic -coverprofile=coverage.txt ./...
 

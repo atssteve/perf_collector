@@ -18,6 +18,7 @@ type Local struct {
 	Compressed   bool
 }
 
+// Write drains the current channel to a file.
 func (l *Local) Write(c chan metrics.Metric) {
 	file := l.createFile()
 	f, err := os.OpenFile(file, os.O_APPEND|os.O_WRONLY, 0644)
@@ -25,19 +26,18 @@ func (l *Local) Write(c chan metrics.Metric) {
 		panic(err)
 	}
 	defer f.Close()
+
 	for {
-		select {
-		case m := <-c:
-			_, err := f.WriteString(m.String())
-			if err != nil {
-				panic(err)
-			}
-		case <-time.After(2 * time.Second):
-			return
+		m := <-c
+		_, err := f.WriteString(m.String() + "\n")
+		if err != nil {
+			panic(err)
 		}
+
 	}
 }
 
+// createFile either returns an existing file to use or creates a new one.
 func (l *Local) createFile() string {
 	ts := time.Now().Unix()
 	epoch := strconv.Itoa(int(ts))
