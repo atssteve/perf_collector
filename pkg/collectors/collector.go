@@ -43,4 +43,5 @@ func UpdateCollection(ch chan metrics.Metric) {
 		}()
 	}
 	wg.Wait()
+	close(ch)
 }
