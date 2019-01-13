@@ -37,7 +37,11 @@ func (l *Local) Write(c chan metrics.Metric) {
 		m := <-c
 		_, err := l.workingFile.WriteString(m.String() + "\n")
 		if err != nil {
-			panic(err)
+			log.WithFields(log.Fields{
+				"output": "local",
+				"task":   "write",
+				"action": "writeToFile",
+			}).Errorf("Unable to write to file: %+v", err)
 		}
 		l.rw.Unlock()
 	}
@@ -54,7 +58,11 @@ func (l *Local) createFile() {
 	if os.IsNotExist(err) {
 		file, err := os.Create(filename)
 		if err != nil {
-			panic(err)
+			log.WithFields(log.Fields{
+				"output": "local",
+				"task":   "createFile",
+				"action": "createFile",
+			}).Errorf("Unable to create file: %+v", err)
 		}
 		l.workingFile = file
 	}
