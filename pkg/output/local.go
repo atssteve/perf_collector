@@ -1,6 +1,9 @@
 package output
 
 import (
+	"bufio"
+	"compress/gzip"
+	"io/ioutil"
 	"os"
 	"strconv"
 	"sync"
@@ -65,6 +68,41 @@ func (l *Local) rotateFile() {
 			"output": "local",
 			"task":   "rotate",
 		}).Infof("Rotating: %+v", f.Name())
+		if l.Compressed {
+			go l.compress(l.workingFile)
+		} else {
+			l.workingFile.Close()
+		}
 		l.createFile()
 	}
+}
+
+// compress excepts a file to compress and cleans it up. Should be ran concurrently, not
+// using the file from the struct to avoid having to add more locking.
+func (l *Local) compress(file *os.File) {
+	fz := file.Name() + ".gz"
+	zip, err := os.Create(fz)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"output": "local",
+			"task":   "compress",
+			"action": "CreateZip",
+		}).Errorf("Unable to open file: %+v", err)
+	}
+	defer os.Remove(file.Name())
+	defer zip.Close()
+
+	r := bufio.NewReader(file)
+	content, err := ioutil.ReadAll(r)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"output": "local",
+			"task":   "compress",
+			"action": "OpenActiveFile",
+		}).Errorf("Unable to read file: %+v", err)
+	}
+	w := gzip.NewWriter(zip)
+	w.Write(content)
+	w.Close()
+
 }
