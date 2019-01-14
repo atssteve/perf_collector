@@ -9,11 +9,19 @@ import (
 )
 
 func GetMemInfo(ch chan metrics.Metric) {
-	v, _ := mem.VirtualMemory()
+	v, err := mem.VirtualMemory()
 	log.WithFields(log.Fields{
 		"collector": "meminfo",
-		"os":        "linux",
-	}).Debug(v)
+		"os":        "darwin",
+		"action":    "GetMemory",
+	}).Errorf("Unable to get memory stats: %+v", err)
+	memory := metrics.Memory{
+		Memory: v,
+	}
+	log.WithFields(log.Fields{
+		"collector": "meminfo",
+		"os":        "darwin",
+	}).Debug(memory)
 
-	ch <- v
+	ch <- memory
 }
