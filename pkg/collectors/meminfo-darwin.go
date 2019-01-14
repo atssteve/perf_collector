@@ -10,11 +10,21 @@ import (
 
 // GetMemInfo collects all of the virtual memory information for the requested OS.
 func GetMemInfo(ch chan metrics.Metric) {
-	v, _ := mem.VirtualMemory()
+	v, err := mem.VirtualMemory()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"collector": "meminfo",
+			"os":        "darwin",
+			"action":    "GetMemory",
+		}).Errorf("Unable to get memory stats: %+v", err)
+	}
+	memory := metrics.Memory{
+		Memory: v,
+	}
 	log.WithFields(log.Fields{
 		"collector": "meminfo",
 		"os":        "darwin",
-	}).Debug(v)
+	}).Debug(memory)
 
-	ch <- v
+	ch <- memory
 }

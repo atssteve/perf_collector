@@ -10,12 +10,22 @@ import (
 
 // GetDiskInfo collects all of the available stats for disk
 func GetDiskInfo(ch chan metrics.Metric) {
-	diskStats, _ := disk.IOCounters()
+	diskStats, err := disk.IOCounters()
+	if err != nil {
+		log.WithFields(log.Fields{
+			"collector": "disk",
+			"os":        "darwin",
+			"action":    "GetDiskIO",
+		}).Errorf("Unable to get disk stats: %+v", err)
+	}
 	log.WithFields(log.Fields{
 		"collector": "disk",
 		"os":        "darwin",
 	}).Debug(diskStats)
 	for _, v := range diskStats {
-		ch <- v
+		disk := metrics.Disk{
+			Disk: v,
+		}
+		ch <- disk
 	}
 }
