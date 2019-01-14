@@ -10,13 +10,24 @@ import (
 
 // GetCPUInfo collects all of the virtual memory information for the requested OS.
 func GetCPUInfo(ch chan metrics.Metric) {
-	v, _ := cpu.Times(true)
+	v, err := cpu.Times(true)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"collector": "cpu",
+			"os":        "darwin",
+			"action":    "GetCPUTimes",
+		}).Errorf("Unable to get CPU stats: %+v", err)
+	}
+
 	log.WithFields(log.Fields{
 		"collector": "cpu",
 		"os":        "darwin",
 	}).Debug(v)
 
 	for _, metric := range v {
-		ch <- metric
+		cpu := metrics.CPU{
+			CPU: metric,
+		}
+		ch <- cpu
 	}
 }
