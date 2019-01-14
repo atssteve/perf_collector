@@ -56,7 +56,7 @@ func GetPerfData() {
 			"memory_alloc":   bToMB(m.Alloc),
 			"memory_total":   bToMB(m.TotalAlloc),
 			"memory_heap":    bToMB(m.HeapAlloc),
-			"memory_objects": bToMB(m.HeapObjects),
+			"memory_objects": m.HeapObjects,
 			"memory_sys":     bToMB(m.Sys),
 			"memory_num_gc":  m.NumGC,
 		}).Info("Memory Statistics")
