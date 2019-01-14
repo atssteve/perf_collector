@@ -100,13 +100,23 @@ func (l *Local) compress(file *os.File) {
 	defer os.Remove(file.Name())
 	defer zip.Close()
 
-	r := bufio.NewReader(file)
-	content, err := ioutil.ReadAll(r)
+	f, err := os.Open(file.Name())
 	if err != nil {
 		log.WithFields(log.Fields{
 			"output": "local",
 			"task":   "compress",
 			"action": "OpenActiveFile",
+		}).Errorf("Unable to open file: %+v", err)
+	}
+	defer f.Close()
+
+	r := bufio.NewReader(f)
+	content, err := ioutil.ReadAll(r)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"output": "local",
+			"task":   "compress",
+			"action": "ReadActiveFile",
 		}).Errorf("Unable to read file: %+v", err)
 	}
 	w := gzip.NewWriter(zip)
