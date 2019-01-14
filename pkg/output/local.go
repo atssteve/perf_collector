@@ -1,6 +1,9 @@
 package output
 
 import (
+	"bufio"
+	"compress/gzip"
+	"io/ioutil"
 	"os"
 	"strconv"
 	"sync"
@@ -34,7 +37,11 @@ func (l *Local) Write(c chan metrics.Metric) {
 		m := <-c
 		_, err := l.workingFile.WriteString(m.String() + "\n")
 		if err != nil {
-			panic(err)
+			log.WithFields(log.Fields{
+				"output": "local",
+				"task":   "write",
+				"action": "writeToFile",
+			}).Errorf("Unable to write to file: %+v", err)
 		}
 		l.rw.Unlock()
 	}
@@ -51,7 +58,11 @@ func (l *Local) createFile() {
 	if os.IsNotExist(err) {
 		file, err := os.Create(filename)
 		if err != nil {
-			panic(err)
+			log.WithFields(log.Fields{
+				"output": "local",
+				"task":   "createFile",
+				"action": "createFile",
+			}).Errorf("Unable to create file: %+v", err)
 		}
 		l.workingFile = file
 	}
@@ -65,6 +76,51 @@ func (l *Local) rotateFile() {
 			"output": "local",
 			"task":   "rotate",
 		}).Infof("Rotating: %+v", f.Name())
+		if l.Compressed {
+			go l.compress(l.workingFile)
+		} else {
+			l.workingFile.Close()
+		}
 		l.createFile()
 	}
+}
+
+// compress excepts a file to compress and cleans it up. Should be ran concurrently, not
+// using the file from the struct to avoid having to add more locking.
+func (l *Local) compress(file *os.File) {
+	fz := file.Name() + ".gz"
+	zip, err := os.Create(fz)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"output": "local",
+			"task":   "compress",
+			"action": "CreateZip",
+		}).Errorf("Unable to open file: %+v", err)
+	}
+	defer os.Remove(file.Name())
+	defer zip.Close()
+
+	f, err := os.Open(file.Name())
+	if err != nil {
+		log.WithFields(log.Fields{
+			"output": "local",
+			"task":   "compress",
+			"action": "OpenActiveFile",
+		}).Errorf("Unable to open file: %+v", err)
+	}
+	defer f.Close()
+
+	r := bufio.NewReader(f)
+	content, err := ioutil.ReadAll(r)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"output": "local",
+			"task":   "compress",
+			"action": "ReadActiveFile",
+		}).Errorf("Unable to read file: %+v", err)
+	}
+	w := gzip.NewWriter(zip)
+	w.Write(content)
+	w.Close()
+
 }
