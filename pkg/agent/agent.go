@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"runtime"
 	"time"
 
 	"github.com/atssteve/perf_collector/pkg/collectors"
@@ -21,11 +22,10 @@ type Agent struct {
 // Start is a prototype/placeholder right now.
 func (a *Agent) Start() {
 	// Making channels here for metrics and outputters
-
+	go GetPerfData()
 	localChan := make(chan metrics.Metric)
 	log.WithFields(log.Fields{
 		"pooling_intervals": a.Intervals,
-		"output":            a.Output,
 	}).Info("Starting new agent")
 	collectors.StartCollection()
 	// Start up any enabled outputters
@@ -45,4 +45,25 @@ func (a *Agent) Start() {
 		}
 		time.Sleep(a.Intervals)
 	}
+}
+
+// GetPerfData logs current memory usage.
+func GetPerfData() {
+	for {
+		var m runtime.MemStats
+		runtime.ReadMemStats(&m)
+		log.WithFields(log.Fields{
+			"memory_alloc":   bToMB(m.Alloc),
+			"memory_total":   bToMB(m.TotalAlloc),
+			"memory_heap":    bToMB(m.HeapAlloc),
+			"memory_objects": bToMB(m.HeapObjects),
+			"memory_sys":     bToMB(m.Sys),
+			"memory_num_gc":  m.NumGC,
+		}).Info("Memory Statistics")
+		time.Sleep(time.Second * 5)
+	}
+}
+
+func bToMB(b uint64) uint64 {
+	return b / 1024 / 1024
 }
