@@ -14,7 +14,7 @@ func GetCPUInfo(ch chan metrics.Metric) {
 	log.WithFields(log.Fields{
 		"collector": "cpu",
 		"os":        "linux",
-	}).Info(v)
+	}).Debug(v)
 
 	for _, metric := range v {
 		ch <- metric
