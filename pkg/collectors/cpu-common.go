@@ -12,7 +12,7 @@ type cpuCollector struct {
 	Collector string
 }
 
-// NewCPUCollector creates a new memory collector for registration.
+// NewCPUCollector creates a new cpu collector for registration.
 func NewCPUCollector() Collector {
 	return &cpuCollector{
 		Collector: "cpu",

@@ -12,7 +12,7 @@ type diskCollector struct {
 	Collector string
 }
 
-// NewDiskCollector creates a new memory collector for registration.
+// NewDiskCollector creates a disk collector for registration.
 func NewDiskCollector() Collector {
 	return &diskCollector{
 		Collector: "disk",

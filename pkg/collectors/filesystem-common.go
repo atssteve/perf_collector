@@ -12,7 +12,7 @@ type fileSystemCollector struct {
 	Collector string
 }
 
-// NewFSCollector creates a new memory collector for registration.
+// NewFSCollector creates a filesystem collector for registration.
 func NewFSCollector() Collector {
 	return &fileSystemCollector{
 		Collector: "filesystem",

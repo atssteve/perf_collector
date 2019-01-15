@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// GetMemInfo collects all of the virtual memory information for the requested OS.
+// GetMemInfo collects all of the cpu information for the requested OS.
 func GetCPUInfo(ch chan metrics.Metric) {
 	v, _ := cpu.Times(true)
 	log.WithFields(log.Fields{

@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// GetFSInfo collects all of the available stats for disk
+// GetFSInfo collects all of the available stats for the filesystem
 func GetFSInfo(ch chan metrics.Metric) {
 	mountedFS, err := disk.Partitions(false)
 	if err != nil {
