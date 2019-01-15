@@ -40,7 +40,7 @@ func StartCollection() {
 func UpdateCollection(ch chan metrics.Metric) {
 	for k, v := range registeredCollectors {
 		// This is stop the filesystem stats from running every 2 seconds
-		// right now the default is 10 minutes. This is currently hard coded
+		// right now the default is 1 minute. This is currently hard coded
 		if k == "filesystem" {
 			if time.Now().Sub(fstimer) > (time.Minute*1) || time.Now().Sub(fstimer) < (time.Second*2) {
 				log.WithFields(log.Fields{
