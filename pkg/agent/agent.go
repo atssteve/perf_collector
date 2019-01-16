@@ -60,8 +60,6 @@ func (a *Agent) Start() {
 			fmt.Println(m)
 		}
 		close(metricsChannel)
-
-		// time.Sleep(a.Intervals)
 	}
 }
 
