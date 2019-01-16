@@ -1,7 +1,6 @@
 package agent
 
 import (
-	"fmt"
 	"runtime"
 	"time"
 
@@ -49,17 +48,15 @@ func (a *Agent) Start() {
 	}
 
 	// Start collections
+	// for {
 	for x := 0; x < 3; x++ {
 		metricsChannel := make(chan metrics.Metric, 1000)
-
 		collectors.UpdateCollection(metricsChannel, &scheduler)
 		for m := range metricsChannel {
 			if a.Output.Local.Enabled {
 				localChan <- m
 			}
-			fmt.Println(m)
 		}
-		close(metricsChannel)
 	}
 }
 
