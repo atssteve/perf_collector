@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"fmt"
 	"runtime"
 	"time"
 
@@ -17,10 +18,22 @@ import (
 type Agent struct {
 	Intervals time.Duration
 	Output    output.Output
+	CPUTime   time.Duration
+	DiskTime  time.Duration
+	MemTime   time.Duration
+	FSTime    time.Duration
 }
+
+var scheduler collectors.Scheduler
 
 // Start is a prototype/placeholder right now.
 func (a *Agent) Start() {
+	// Were just passing down the times from the root agent to the scheduler
+	scheduler.CPUTime = a.CPUTime
+	scheduler.DiskTime = a.DiskTime
+	scheduler.FSTime = a.FSTime
+	scheduler.MemTime = a.MemTime
+
 	// Making channels here for metrics and outputters
 	go GetPerfData()
 	localChan := make(chan metrics.Metric)
@@ -38,14 +51,17 @@ func (a *Agent) Start() {
 	// Start collections
 	for x := 0; x < 3; x++ {
 		metricsChannel := make(chan metrics.Metric, 1000)
-		collectors.UpdateCollection(metricsChannel)
 
+		collectors.UpdateCollection(metricsChannel, &scheduler)
 		for m := range metricsChannel {
 			if a.Output.Local.Enabled {
 				localChan <- m
 			}
+			fmt.Println(m)
 		}
-		time.Sleep(a.Intervals)
+		close(metricsChannel)
+
+		// time.Sleep(a.Intervals)
 	}
 }
 

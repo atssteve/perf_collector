@@ -25,6 +25,5 @@ func GetMemInfo(ch chan metrics.Metric) {
 		"collector": "meminfo",
 		"os":        "darwin",
 	}).Debug(memory)
-
 	ch <- memory
 }

@@ -23,7 +23,7 @@ var newagent agent.Agent
 //Execute runs at the time the commandline tool is called.
 func Execute() {
 	rootCmd.Flags().BoolVar(&newagent.Output.Local.Compressed, "no-compression", true, "Disable compression of rotated file")
-	rootCmd.Flags().DurationVarP(&newagent.Intervals, "intervals", "i", time.Duration(2)*time.Second, "The number of seconds to wait before collecting metrics.")
+	rootCmd.Flags().DurationVarP(&newagent.DiskTime, "intervals", "i", time.Duration(2)*time.Second, "The number of seconds to wait before collecting metrics.")
 	rootCmd.Flags().BoolVar(&newagent.Output.Local.Enabled, "local", false, "Output files to a local filesystems")
 	rootCmd.Flags().StringVar(&newagent.Output.Local.Path, "path", "/tmp", "Path in which to write files to.")
 	rootCmd.Flags().DurationVar(&newagent.Output.Local.RotationTime, "rotation-time", time.Duration(15)*time.Minute, "Duration in which to rotation file. Decreasing this entry will increase the rate which data is uploaded to S3")
