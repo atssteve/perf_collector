@@ -49,14 +49,17 @@ func (a *Agent) Start() {
 
 	// Start collections
 	// for {
-	for x := 0; x < 3; x++ {
+	for x := 0; x < 12; x++ {
 		metricsChannel := make(chan metrics.Metric, 1000)
-		collectors.UpdateCollection(metricsChannel, &scheduler)
+		collectors.UpdateCollection(metricsChannel)
 		for m := range metricsChannel {
 			if a.Output.Local.Enabled {
 				localChan <- m
 			}
+			// fmt.Println(m)
 		}
+		time.Sleep(1 * time.Second)
+
 	}
 }
 
