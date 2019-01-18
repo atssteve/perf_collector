@@ -5,7 +5,7 @@ import (
 )
 
 func init() {
-	registerCollector("cpu", NewCPUCollector)
+	registerMetricCollectors("cpu", NewCPUCollector)
 }
 
 type cpuCollector struct {

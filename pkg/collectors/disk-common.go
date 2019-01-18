@@ -5,7 +5,7 @@ import (
 )
 
 func init() {
-	registerCollector("disk", NewDiskCollector)
+	registerMetricCollectors("disk", NewDiskCollector)
 }
 
 type diskCollector struct {

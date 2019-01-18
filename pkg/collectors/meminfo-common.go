@@ -5,7 +5,7 @@ import (
 )
 
 func init() {
-	registerCollector("meminfo", NewMemInfoCollector)
+	registerMetricCollectors("meminfo", NewMemInfoCollector)
 }
 
 type memInfoCollector struct {

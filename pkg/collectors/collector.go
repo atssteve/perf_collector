@@ -15,7 +15,11 @@ type Collector interface {
 	Update(ch chan metrics.Metric)
 }
 
-func registerCollector(collectorName string, collectorInit func() Collector) {
+func registerMetricCollectors(collectorName string, collectorInit func() Collector) {
+	registeredCollectors[collectorName] = collectorInit
+}
+
+func registerConfigCollectors(collectorName string, collectorInit func() Collector) {
 	registeredCollectors[collectorName] = collectorInit
 }
 
