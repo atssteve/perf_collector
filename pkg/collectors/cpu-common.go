@@ -9,16 +9,16 @@ func init() {
 }
 
 type cpuCollector struct {
-	Collector string
+	MetricsCollector string
 }
 
 // NewCPUCollector creates a new memory collector for registration.
-func NewCPUCollector() Collector {
+func NewCPUCollector() MetricsCollector {
 	return &cpuCollector{
-		Collector: "cpu",
+		MetricsCollector: "cpu",
 	}
 }
 
-func (m *cpuCollector) Update(ch chan metrics.Metric) {
+func (m *cpuCollector) UpdateMetrics(ch chan metrics.Metric) {
 	GetCPUInfo(ch)
 }

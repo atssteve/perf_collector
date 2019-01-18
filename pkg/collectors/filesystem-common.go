@@ -5,21 +5,21 @@ import (
 )
 
 func init() {
-	registerConfigCollectors("disk", NewDiskCollector)
+	registerConfigCollectors("filesystem", NewFSCollector)
 }
 
 type fileSystemCollector struct {
-	Collector string
+	ConfigCollector string
 }
 
 // NewFSCollector creates a filesystem collector for registration.
-func NewFSCollector() Collector {
+func NewFSCollector() ConfigCollector {
 	return &fileSystemCollector{
-		Collector: "filesystem",
+		ConfigCollector: "filesystem",
 	}
 }
 
 //Update does things to fsstats
-func (m *fileSystemCollector) Update(ch chan metrics.Metric) {
+func (m *fileSystemCollector) UpdateConfigs(ch chan metrics.Metric) {
 	GetFSInfo(ch)
 }
