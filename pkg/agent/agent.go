@@ -17,8 +17,9 @@ var wg sync.WaitGroup
 
 // Agent contains metadata about how the Agent has been requested to start.
 type Agent struct {
-	Intervals time.Duration
-	Output    output.Output
+	MetInterval  time.Duration
+	ConfInterval time.Duration
+	Output       output.Output
 }
 
 // StartCollection kicks off all the collectors
@@ -27,7 +28,8 @@ func (a *Agent) StartCollection() {
 	go GetPerfData()
 	localChan := make(chan metrics.Metric)
 	log.WithFields(log.Fields{
-		"pooling_intervals": a.Intervals,
+		"pooling_metric_interval": a.MetInterval,
+		"pooling_config_interval": a.ConfInterval,
 	}).Info("Starting new agent")
 	collectors.LogActiveCollectors()
 
@@ -49,7 +51,7 @@ func (a *Agent) StartCollection() {
 					localChan <- m
 				}
 			}
-			time.Sleep(a.Intervals)
+			time.Sleep(a.MetInterval)
 		}
 		wg.Done()
 	}()
@@ -62,7 +64,7 @@ func (a *Agent) StartCollection() {
 					localChan <- m
 				}
 			}
-			time.Sleep(time.Duration(4) * time.Second)
+			time.Sleep(a.ConfInterval)
 		}
 		wg.Done()
 	}()
