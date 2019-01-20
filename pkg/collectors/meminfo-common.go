@@ -5,20 +5,20 @@ import (
 )
 
 func init() {
-	registerCollector("meminfo", NewMemInfoCollector)
+	registerMetricCollectors("meminfo", NewMemInfoCollector)
 }
 
 type memInfoCollector struct {
-	Collector string
+	MetricsCollector string
 }
 
 // NewMemInfoCollector creates a new memory collector for registration.
-func NewMemInfoCollector() Collector {
+func NewMemInfoCollector() MetricsCollector {
 	return &memInfoCollector{
-		Collector: "meminfo",
+		MetricsCollector: "meminfo",
 	}
 }
 
-func (m *memInfoCollector) Update(ch chan metrics.Metric) {
+func (m *memInfoCollector) UpdateMetrics(ch chan metrics.Metric) {
 	GetMemInfo(ch)
 }

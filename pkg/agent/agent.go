@@ -2,6 +2,7 @@ package agent
 
 import (
 	"runtime"
+	"sync"
 	"time"
 
 	"github.com/atssteve/perf_collector/pkg/collectors"
@@ -12,41 +13,56 @@ import (
 
 // This package manages the logistics of requesting updates to the collections based on
 // what is passed in via cobra.
+var wg sync.WaitGroup
 
 // Agent contains metadata about how the Agent has been requested to start.
 type Agent struct {
-	Intervals time.Duration
-	Output    output.Output
+	MetricInterval time.Duration
+	ConfigInterval time.Duration
+	Output         output.Output
 }
 
-// Start is a prototype/placeholder right now.
-func (a *Agent) Start() {
-	// Making channels here for metrics and outputters
+// StartCollection kicks off all the collectors
+func (a *Agent) StartCollection() {
 	go GetPerfData()
 	localChan := make(chan metrics.Metric)
-
 	log.WithFields(log.Fields{
-		"pooling_intervals": a.Intervals,
+		"pooling_metric_interval": a.MetricInterval,
+		"pooling_config_interval": a.ConfigInterval,
 	}).Info("Starting new agent")
-	collectors.StartCollection()
+	collectors.LogActiveCollectors()
 
 	// Start up any enabled outputters
 	if a.Output.Local.Enabled {
 		go a.Output.Local.Write(localChan)
 	}
 
-	// Start collections
-	for x := 0; x < 3; x++ {
-		metricsChannel := make(chan metrics.Metric, 1000)
-		collectors.UpdateCollection(metricsChannel)
-
-		for m := range metricsChannel {
-			if a.Output.Local.Enabled {
-				localChan <- m
+	go func() {
+		for {
+			metricsChannel := make(chan metrics.Metric, 1000)
+			collectors.UpdateMetricCollection(metricsChannel)
+			for m := range metricsChannel {
+				if a.Output.Local.Enabled {
+					localChan <- m
+				}
 			}
+			time.Sleep(a.MetricInterval)
 		}
-		time.Sleep(a.Intervals)
-	}
+	}()
+	go func() {
+		for {
+			configChannel := make(chan metrics.Metric, 1000)
+			collectors.UpdateConfigCollection(configChannel)
+			for m := range configChannel {
+				if a.Output.Local.Enabled {
+					localChan <- m
+				}
+			}
+			time.Sleep(a.ConfigInterval)
+		}
+	}()
+	wg.Add(1)
+	wg.Wait()
 }
 
 // GetPerfData logs current memory usage.

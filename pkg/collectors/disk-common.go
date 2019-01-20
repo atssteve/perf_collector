@@ -5,20 +5,20 @@ import (
 )
 
 func init() {
-	registerCollector("disk", NewDiskCollector)
+	registerMetricCollectors("disk", NewDiskCollector)
 }
 
 type diskCollector struct {
-	Collector string
+	MetricsCollector string
 }
 
 // NewDiskCollector creates a new memory collector for registration.
-func NewDiskCollector() Collector {
+func NewDiskCollector() MetricsCollector {
 	return &diskCollector{
-		Collector: "disk",
+		MetricsCollector: "disk",
 	}
 }
 
-func (m *diskCollector) Update(ch chan metrics.Metric) {
+func (m *diskCollector) UpdateMetrics(ch chan metrics.Metric) {
 	GetDiskInfo(ch)
 }
