@@ -39,12 +39,13 @@ func (a *Agent) StartCollection() {
 	}
 
 	// The wait group must equal the number of different collectors running
-	wg.Add(2)
+	// wg.Add(2)
+	metricsChannel := make(chan metrics.Metric, 1000)
 
 	// Start Metrics Collections
 	go func() {
 		for x := 0; x < 3; x++ {
-			metricsChannel := make(chan metrics.Metric, 1000)
+			// metricsChannel := make(chan metrics.Metric, 1000)
 			collectors.UpdateMetricCollection(metricsChannel)
 			for m := range metricsChannel {
 				if a.Output.Local.Enabled {
@@ -53,22 +54,23 @@ func (a *Agent) StartCollection() {
 			}
 			time.Sleep(a.MetricInterval)
 		}
-		wg.Done()
+		// wg.Done()
 	}()
 	go func() {
 		for x := 0; x < 3; x++ {
-			configChannel := make(chan metrics.Metric, 1000)
-			collectors.UpdateConfigCollection(configChannel)
-			for m := range configChannel {
+			// configChannel := make(chan metrics.Metric, 1000)
+			// collectors.UpdateConfigCollection(configChannel)
+			collectors.UpdateConfigCollection(metricsChannel)
+			for m := range metricsChannel {
 				if a.Output.Local.Enabled {
 					localChan <- m
 				}
 			}
 			time.Sleep(a.ConfigInterval)
 		}
-		wg.Done()
+		// wg.Done()
 	}()
-	wg.Wait()
+	// wg.Wait()
 }
 
 // GetPerfData logs current memory usage.
