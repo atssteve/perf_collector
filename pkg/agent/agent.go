@@ -40,37 +40,63 @@ func (a *Agent) StartCollection() {
 
 	// The wait group must equal the number of different collectors running
 	// wg.Add(2)
-	metricsChannel := make(chan metrics.Metric, 1000)
+	//metricsChannel := make(chan metrics.Metric, 1000)
 
+	a.StartMetricsCollection(localChan)
+	a.StartConfigCollection(localChan)
 	// Start Metrics Collections
-	go func() {
-		for x := 0; x < 3; x++ {
-			// metricsChannel := make(chan metrics.Metric, 1000)
-			collectors.UpdateMetricCollection(metricsChannel)
-			for m := range metricsChannel {
-				if a.Output.Local.Enabled {
-					localChan <- m
-				}
-			}
-			time.Sleep(a.MetricInterval)
-		}
-		// wg.Done()
-	}()
-	go func() {
-		for x := 0; x < 3; x++ {
-			// configChannel := make(chan metrics.Metric, 1000)
-			// collectors.UpdateConfigCollection(configChannel)
-			collectors.UpdateConfigCollection(metricsChannel)
-			for m := range metricsChannel {
-				if a.Output.Local.Enabled {
-					localChan <- m
-				}
-			}
-			time.Sleep(a.ConfigInterval)
-		}
-		// wg.Done()
-	}()
+	// for {
+	// 	go func() {
+	// 		// metricsChannel := make(chan metrics.Metric, 1000)
+	// 		collectors.UpdateMetricCollection(metricsChannel)
+	// 		for m := range metricsChannel {
+	// 			if a.Output.Local.Enabled {
+	// 				localChan <- m
+	// 			}
+	// 		}
+	// 		time.Sleep(a.MetricInterval)
+	// 		// wg.Done()
+	// 	}()
+	// 	go func() {
+	// 		// configChannel := make(chan metrics.Metric, 1000)
+	// 		// collectors.UpdateConfigCollection(configChannel)
+	// 		collectors.UpdateConfigCollection(metricsChannel)
+	// 		for m := range metricsChannel {
+	// 			if a.Output.Local.Enabled {
+	// 				localChan <- m
+	// 			}
+	// 		}
+	// 		time.Sleep(a.ConfigInterval)
+	// 		// wg.Done()
+	// 	}()
+	// }
 	// wg.Wait()
+}
+
+func (a *Agent) StartMetricsCollection(localChan chan metrics.Metric) {
+	for {
+		metricsChannel := make(chan metrics.Metric, 1000)
+		collectors.UpdateMetricCollection(metricsChannel)
+		for m := range metricsChannel {
+			if a.Output.Local.Enabled {
+				localChan <- m
+			}
+		}
+		time.Sleep(a.MetricInterval)
+	}
+}
+
+func (a *Agent) StartConfigCollection(localChan chan metrics.Metric) {
+	for {
+		configChannel := make(chan metrics.Metric, 1000)
+		collectors.UpdateConfigCollection(configChannel)
+		for m := range configChannel {
+			if a.Output.Local.Enabled {
+				localChan <- m
+			}
+		}
+		time.Sleep(a.MetricInterval)
+	}
 }
 
 // GetPerfData logs current memory usage.
