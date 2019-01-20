@@ -7,7 +7,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var wg sync.WaitGroup
 var registeredMeticCollectors = make(map[string]func() MetricsCollector)
 var registeredConfigCollectors = make(map[string]func() ConfigCollector)
 
@@ -44,17 +43,9 @@ func LogActiveCollectors() {
 	log.Infof("Registered Config Collectors: %s", activeConfigCollectors)
 }
 
-// LogActiveConfigCollectors logs a list of registered collectors before kicking off the collection.
-func LogActiveConfigCollectors() {
-	activeConfigCollectors := []string{}
-	for k := range registeredConfigCollectors {
-		activeConfigCollectors = append(activeConfigCollectors, k)
-	}
-	log.Infof("Registered Config Collectors: %s", activeConfigCollectors)
-}
-
 // UpdateMetricCollection requests all of the collectors to update their metrics.
 func UpdateMetricCollection(ch chan metrics.Metric) {
+	var wg sync.WaitGroup
 	for k, v := range registeredMeticCollectors {
 		wg.Add(1)
 		log.WithFields(log.Fields{
@@ -73,6 +64,7 @@ func UpdateMetricCollection(ch chan metrics.Metric) {
 
 // UpdateConfigCollection requests all of the collectors to update their metrics.
 func UpdateConfigCollection(ch chan metrics.Metric) {
+	var wg sync.WaitGroup
 	for k, v := range registeredConfigCollectors {
 		wg.Add(1)
 		log.WithFields(log.Fields{
