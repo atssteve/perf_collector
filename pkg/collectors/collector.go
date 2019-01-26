@@ -5,10 +5,13 @@ import (
 
 	"github.com/atssteve/perf_collector/pkg/metrics"
 	log "github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
-var registeredMeticCollectors = make(map[string]func() MetricsCollector)
-var registeredConfigCollectors = make(map[string]func() ConfigCollector)
+var allMeticCollectors = make(map[string]func() MetricsCollector)
+var allConfigCollectors = make(map[string]func() ConfigCollector)
+var activeMetricCollectors []string
+var activeConfigCollectors []string
 
 // MetricsCollector interface allows registeration of any collector simply by containing the UpdateMetrics receiver.
 type MetricsCollector interface {
@@ -20,39 +23,50 @@ type ConfigCollector interface {
 	UpdateConfigs(ch chan metrics.Metric)
 }
 
-func registerMetricCollectors(collectorName string, collectorInit func() MetricsCollector) {
-	registeredMeticCollectors[collectorName] = collectorInit
+func registerAllMetricCollectors(collectorName string, collectorInit func() MetricsCollector) {
+	allMeticCollectors[collectorName] = collectorInit
 }
 
-func registerConfigCollectors(collectorName string, collectorInit func() ConfigCollector) {
-	registeredConfigCollectors[collectorName] = collectorInit
+func registerAllConfigCollectors(collectorName string, collectorInit func() ConfigCollector) {
+	allConfigCollectors[collectorName] = collectorInit
+}
+
+func findOutWhatsActive() {
+	for collector, inbool := range viper.Get("collector.metric").(map[string]interface{}) {
+		if inbool.(bool) {
+			activeMetricCollectors = append(activeMetricCollectors, collector)
+		}
+	}
+	for collector, inbool := range viper.Get("collector.config").(map[string]interface{}) {
+		if inbool.(bool) {
+			activeConfigCollectors = append(activeConfigCollectors, collector)
+		}
+	}
 }
 
 // LogActiveCollectors logs a list of registered collectors before kicking off the collection.
 func LogActiveCollectors() {
-	activeMetricCollectors := []string{}
-	activeConfigCollectors := []string{}
-	for k := range registeredMeticCollectors {
-		activeMetricCollectors = append(activeMetricCollectors, k)
-	}
-	log.Infof("Registered Metric Collectors: %s", activeMetricCollectors)
+	findOutWhatsActive()
 
-	for k := range registeredConfigCollectors {
-		activeConfigCollectors = append(activeConfigCollectors, k)
+	if len(activeMetricCollectors) > 0 {
+		log.Infof("Registered Metric Collectors: %s", activeMetricCollectors)
 	}
-	log.Infof("Registered Config Collectors: %s", activeConfigCollectors)
+	if len(activeConfigCollectors) > 0 {
+		log.Infof("Registered Config Collectors: %s", activeConfigCollectors)
+	}
+
 }
 
 // UpdateMetricCollection requests all of the collectors to update their metrics.
 func UpdateMetricCollection(ch chan metrics.Metric) {
 	var wg sync.WaitGroup
-	for k, v := range registeredMeticCollectors {
+	for _, col := range activeMetricCollectors {
 		wg.Add(1)
 		log.WithFields(log.Fields{
-			"collector": k,
+			"collector": col,
 			"action":    "Starting Metric Collection",
-		}).Info(k)
-		collector := v()
+		}).Info(col)
+		collector := allMeticCollectors[col]()
 		go func() {
 			collector.UpdateMetrics(ch)
 			wg.Done()
@@ -65,13 +79,13 @@ func UpdateMetricCollection(ch chan metrics.Metric) {
 // UpdateConfigCollection requests all of the collectors to update their metrics.
 func UpdateConfigCollection(ch chan metrics.Metric) {
 	var wg sync.WaitGroup
-	for k, v := range registeredConfigCollectors {
+	for _, col := range activeConfigCollectors {
 		wg.Add(1)
 		log.WithFields(log.Fields{
-			"collector": k,
+			"collector": col,
 			"action":    "Starting Config Collection",
-		}).Info(k)
-		collector := v()
+		}).Info(col)
+		collector := allConfigCollectors[col]()
 		go func() {
 			collector.UpdateConfigs(ch)
 			wg.Done()

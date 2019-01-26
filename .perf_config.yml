@@ -1,0 +1,10 @@
+intervals:
+    confinterval: 6s
+    metinterval: 3s
+collector:
+    metric:
+        cpu: true
+        mem: false
+        disk: true
+    config:
+        filesystem: true

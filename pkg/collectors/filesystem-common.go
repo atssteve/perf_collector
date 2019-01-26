@@ -5,7 +5,7 @@ import (
 )
 
 func init() {
-	registerConfigCollectors("filesystem", NewFSCollector)
+	registerAllConfigCollectors("filesystem", NewFSCollector)
 }
 
 type fileSystemCollector struct {
