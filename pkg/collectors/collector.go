@@ -3,9 +3,10 @@ package collectors
 import (
 	"sync"
 
+	"github.com/spf13/viper"
+
 	"github.com/atssteve/perf_collector/pkg/metrics"
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 )
 
 var allMeticCollectors = make(map[string]func() MetricsCollector)
@@ -47,7 +48,6 @@ func findOutWhatsActive() {
 // LogActiveCollectors logs a list of registered collectors before kicking off the collection.
 func LogActiveCollectors() {
 	findOutWhatsActive()
-
 	if len(activeMetricCollectors) > 0 {
 		log.Infof("Registered Metric Collectors: %s", activeMetricCollectors)
 	}

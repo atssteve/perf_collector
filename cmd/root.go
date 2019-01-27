@@ -33,6 +33,10 @@ func RootCommand() *cobra.Command {
 	rootCmd.Flags().Bool("collector.metric.disk", false, "Output files to a local filesystems")
 	rootCmd.Flags().Bool("collector.metric.mem", false, "Output files to a local filesystems")
 	rootCmd.Flags().Bool("collector.config.filesystem", false, "Output files to a local filesystems")
+	rootCmd.Flags().MarkHidden("collector.metric.cpu")
+	rootCmd.Flags().MarkHidden("collector.metric.disk")
+	rootCmd.Flags().MarkHidden("collector.metric.mem")
+	rootCmd.Flags().MarkHidden("collector.config.filesystem")
 
 	return &rootCmd
 }

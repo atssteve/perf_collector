@@ -1,12 +1,9 @@
 package agent
 
 import (
-	"fmt"
 	"runtime"
 	"sync"
 	"time"
-
-	"github.com/spf13/viper"
 
 	"github.com/atssteve/perf_collector/pkg/collectors"
 	"github.com/atssteve/perf_collector/pkg/metrics"
@@ -28,7 +25,6 @@ type Agent struct {
 // StartCollection kicks off all the collectors
 func (a *Agent) StartCollection() {
 	go GetPerfData()
-	fmt.Println(viper.Get("collector.metric"))
 	localChan := make(chan metrics.Metric)
 	log.WithFields(log.Fields{
 		"pooling_metric_interval": a.MetricInterval,
